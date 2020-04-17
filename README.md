@@ -1,7 +1,7 @@
 # seq-wrapper
 Augmentations for Scala's collections library.
 
-### Sequences
+### SeqWrapper[T](seq: Seq[T])
 Additional features for Scala's sequences.<br>
 @param seq sequence to augment<br>
 @tparam T sequence element type<br>
