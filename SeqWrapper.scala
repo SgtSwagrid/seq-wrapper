@@ -83,6 +83,15 @@ class SeqWrapper[T](seq: Seq[T]) {
       seq.tail.multisets(min, max)
 
   /**
+    * Create a sequence with the elements of this sequence rotated by n spaces.
+    * @param n number of spaces to rotate, with sign for direction
+    * @return rotated sequence
+    */
+  def rotate(n: Int = 1): Seq[T] =
+    if(n >= 0) seq.takeRight(n % seq.size) ++ seq.dropRight(n % seq.size)
+    else seq.drop(-n % seq.size) ++ seq.take(-n % seq.size)
+
+  /**
     * Remove all of the elements in a range.
     * @param from index of first element to remove
     * @param to index of last element to remove
