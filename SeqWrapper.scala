@@ -92,6 +92,13 @@ class SeqWrapper[T](seq: Seq[T]) {
     else seq.drop(-n % seq.size) ++ seq.take(-n % seq.size)
 
   /**
+    * Create a sequence of sequences for every way to rotate this sequence.
+    * @return sequence of possible rotations
+    */
+  def rotateAll(): Seq[Seq[T]] =
+    (0 until seq.size).map{rotate(_)}
+
+  /**
     * Remove all of the elements in a range.
     * @param from index of first element to remove
     * @param to index of last element to remove
