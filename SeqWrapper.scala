@@ -1,3 +1,5 @@
+import SeqWrapper._
+
 /**
   * Additional features for Scala's sequences.
   * @param seq sequence to augment
@@ -43,6 +45,53 @@ class SeqWrapper[T](seq: Seq[T]) {
     */
   def removeEach(): Seq[Seq[T]] =
     splitMap{(l, _, r) => l ++ r}
+
+  /**
+    * Create a sequence of sequences starting from the original sequence
+    * where each subsequent sequence has the first element removed.
+    * @return sequence of possible suffixes.
+    */
+  def stepped(): Seq[Seq[T]] =
+    splitMap{(_, c, r) => c +: r}
+
+  /**
+    * Create a sequence of sequences for each possible
+    * unordered subset of the elements in this sequence.
+    * Element order is preserved, and elements will not be repeated.
+    * @param min minimum number of elements in each subset
+    * @param max maximum number of elements in each subset
+    * @return sequence of possible subsets
+    */
+  def subsets(min: Int = 0, max: Int = seq.size): Seq[Seq[T]] =
+    if(min > seq.size) Seq()
+    else if(max == 0 || seq.isEmpty) Seq(Seq())
+    else seq.tail.subsets(min-1, max-1).map{seq.head +: _} ++
+      seq.tail.subsets(min, max)
+
+  /**
+    * Create a sequence of sequences for each possible
+    * unordered multiset of the elements in this sequence.
+    * Element order is preserved, and elements may be repeated.
+    * @param min minimum number of elements in each multiset
+    * @param max maximum number of elements in each multiset
+    * @return sequence of possible multisets
+    */
+  def multisets(min: Int = 0, max: Int): Seq[Seq[T]] =
+    if(min > 0 && seq.isEmpty) Seq()
+    else if(max == 0 || seq.isEmpty) Seq(Seq())
+    else multisets(min-1, max-1).map{seq.head +: _} ++
+      seq.tail.multisets(min, max)
+
+  /**
+    * Remove all of the elements in a range.
+    * @param from index of first element to remove
+    * @param to index of last element to remove
+    * @return sequence with index removed
+    */
+  def remove(from: Int, to: Int = -1): Seq[T] = {
+    val toIdx = if (to != -1) to else from
+    seq.take(from) ++ seq.takeRight(seq.size - toIdx - 1)
+  }
 }
 
 object SeqWrapper {
