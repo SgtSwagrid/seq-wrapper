@@ -112,5 +112,5 @@ class SeqWrapper[T](seq: Seq[T]) {
 
 object SeqWrapper {
   implicit def wrapSeq[T](seq: Seq[T]): SeqWrapper[T] =
-    new SeqWrapper(seq)
+    new SeqWrapper(seq.toList)
 }
