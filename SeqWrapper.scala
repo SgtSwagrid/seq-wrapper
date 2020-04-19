@@ -71,10 +71,11 @@ class SeqWrapper[T](seq: Seq[T]) {
 
   /**
     * Create a list of each element k paired with element n-k-1.
+    * In an odd-sized list, the central element will be paired with itself.
     * @return list of element pairs
     */
   def pairEnds(): Seq[(T, T)] =
-    (1 to (seq.size+1)/2).foldLeft((seq, seq.reverse, Seq[(T, T)]())) {
+    (1 to seq.size).foldLeft((seq, seq.reverse, Seq[(T, T)]())) {
       case ((e1 +: p1, e2 +: p2, o), _) => (p1, p2, o :+ (e1, e2))
     }._3
 
