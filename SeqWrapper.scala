@@ -70,6 +70,15 @@ class SeqWrapper[T](seq: Seq[T]) {
     foldWhile(base)(!cond(_))(fold)
 
   /**
+    * Create a list of each element k paired with element n-k-1.
+    * @return list of element pairs
+    */
+  def pairEnds(): Seq[(T, T)] =
+    (1 to (seq.size+1)/2).foldLeft((seq, seq.reverse, Seq[(T, T)]())) {
+      case ((e1 +: p1, e2 +: p2, o), _) => (p1, p2, o :+ (e1, e2))
+    }._3
+
+  /**
     * Create a sequence of sequences starting from the original sequence
     * where each subsequent sequence has the first element removed.
     * @return sequence of possible suffixes.
