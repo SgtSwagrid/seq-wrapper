@@ -55,7 +55,7 @@ class SeqWrapper[T](seq: Seq[T]) {
     * @return result of partial fold
     */
   def foldWhile[U](base: U)(cond: U => Boolean)(fold: ((U, T) => U)): U =
-    seq.foldLeft(base){(r, e) => if(cond(r)) r else fold(r, e)}
+    seq.foldLeft(base){(r, e) => if(cond(r)) fold(r, e) else r}
 
 
   /**
