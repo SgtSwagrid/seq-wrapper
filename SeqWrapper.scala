@@ -47,6 +47,29 @@ class SeqWrapper[T](seq: Seq[T]) {
     splitMap{(l, _, r) => l ++ r}
 
   /**
+    * Fold so long as a condition is met.
+    * @param base the starting fold value
+    * @param cond the condition to keep folding
+    * @param fold the folding function
+    * @tparam U resulting type
+    * @return result of partial fold
+    */
+  def foldWhile[U](base: U)(cond: U => Boolean)(fold: ((U, T) => U)): U =
+    seq.foldLeft(base){(r, e) => if(cond(r)) r else fold(r, e)}
+
+
+  /**
+    * Fold until a condition is met.
+    * @param base the starting fold value
+    * @param cond the condition to stop folding
+    * @param fold the folding function
+    * @tparam U resulting type
+    * @return result of partial fold
+    */
+  def foldUntil[U](base: U)(cond: U => Boolean)(fold: ((U, T) => U)): U =
+    foldWhile(base)(!cond(_))(fold)
+
+  /**
     * Create a sequence of sequences starting from the original sequence
     * where each subsequent sequence has the first element removed.
     * @return sequence of possible suffixes.
