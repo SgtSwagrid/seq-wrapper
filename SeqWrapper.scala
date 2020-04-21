@@ -1,5 +1,4 @@
 import SeqWrapper._
-
 import scala.annotation.tailrec
 
 /**
