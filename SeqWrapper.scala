@@ -31,12 +31,50 @@ class SeqWrapper[T](seq: Seq[T]) {
     splitMap{(l, c, r) => (l :+ mapper(c)) ++ r}
 
   /**
+    * Map only the elements in a range,
+    * keeping everything else the same.
+    * @param from index at which to start mapping
+    * @param to index at which to end mapping
+    * @param mapper  element => result
+    * @return sequence of partially mapped values
+    */
+  def mapRange(from: Int = 0, to: Int = -1)(mapper: T => T): Seq[T] = {
+    val toIdx = if (to != -1) to else from
+    seq.take(from) ++ seq.range(from, to).map(mapper) ++
+      seq.takeRight(seq.size - toIdx - 1)
+  }
+
+  /**
+    * Map only the elements which match a predicate,
+    * keeping everything else the same.
+    * @param cond condition for mapping to occur
+    * @param mapper element => result
+    * @return sequence of partially mapped values
+    */
+  def mapIf(cond: T => Boolean)(mapper: T => T): Seq[T] =
+    seq.map{e => if(cond(e)) mapper(e) else e}
+
+  /**
     * Create a sequence of sequence pairs for each way
     * to split this sequence into two sub-sequences.
     * @return sequence of possible splits
     */
   def splitAll(): Seq[(Seq[T], Seq[T])] =
     splitMap{(l, c, r) => (l, c +: r)} :+ (seq, Seq())
+
+  /**
+    * Find all ways to partition the elements of this
+    * sequence into n sets of particular sizes.
+    * @param sizes the sizes of each respective set
+    * @return sequence of all possible partitions
+    */
+  def partitionAll(sizes: Int*): Seq[Seq[Seq[T]]] =
+    if(sizes.toSeq.anyMatch{_ < 0}) Seq()
+    else if(seq.isEmpty) Seq(Seq.fill(sizes.size)(Seq()))
+    else sizes.toSeq.zipWithIndex.flatMap {case (s, i) =>
+      seq.tail.partitionAll(sizes.updated(i, s-1) :_*)
+        .map{_.mapRange(i){seq.head +: _}}
+    }
 
   /**
     * Create a sequence of sequences for each way to
@@ -140,15 +178,34 @@ class SeqWrapper[T](seq: Seq[T]) {
     (0 until seq.size).map{rotate(_)}
 
   /**
+    * Remove all of the elements not in a range.
+    * @param from index of first element to keep
+    * @param to index of last element to keep
+    * @return sequence with range kept
+    */
+  def range(from: Int, to: Int = -1): Seq[T] = {
+    val toIdx = if (to != -1) to else from
+    seq.drop(from).dropRight(seq.size - toIdx - 1)
+  }
+
+  /**
     * Remove all of the elements in a range.
     * @param from index of first element to remove
     * @param to index of last element to remove
-    * @return sequence with index removed
+    * @return sequence with range removed
     */
   def remove(from: Int, to: Int = -1): Seq[T] = {
     val toIdx = if (to != -1) to else from
     seq.take(from) ++ seq.takeRight(seq.size - toIdx - 1)
   }
+
+  /**
+    * Determines whether this sequences contains an element matching a predicate.
+    * @param cond the condition to test for
+    * @return whether this condition is met
+    */
+  def anyMatch(cond: T => Boolean): Boolean =
+    seq.find(cond).isDefined
 }
 
 object SeqWrapper {
