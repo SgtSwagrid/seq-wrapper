@@ -1,5 +1,7 @@
 import SeqWrapper._
 
+import scala.annotation.tailrec
+
 /**
   * Additional features for Scala's sequences.
   * @param seq sequence to augment
@@ -221,6 +223,20 @@ class SeqWrapper[T](seq: Seq[T]) {
 }
 
 object SeqWrapper {
+
   implicit def wrapSeq[T](seq: Seq[T]): SeqWrapper[T] =
     new SeqWrapper(seq.toList)
+
+  /**
+    * Repeat an action until a condition is met.
+    * @param base the starting fold value
+    * @param cond the condition for continuing
+    * @param fold the folding function
+    * @tparam T the value type being folded
+    * @return the resulting value
+    */
+  @tailrec
+  def repeat[T](base: T)(cond: T => Boolean)(fold: (T => T)): T =
+    if(!cond(base)) base
+    else repeat(fold(base))(cond)(fold)
 }
