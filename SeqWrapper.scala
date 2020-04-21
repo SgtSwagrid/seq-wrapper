@@ -202,10 +202,22 @@ class SeqWrapper[T](seq: Seq[T]) {
   /**
     * Determines whether this sequences contains an element matching a predicate.
     * @param cond the condition to test for
-    * @return whether this condition is met
+    * @return whether this condition is met by any element
     */
   def anyMatch(cond: T => Boolean): Boolean =
     seq.find(cond).isDefined
+
+  /**
+    * Search for an element which matches a predicate so
+    * long as some bound isn't met, otherwise give up.
+    * @param loopCond the condition for stopping
+    * @param matchCond the condition to test for
+    * @return whether this condition is met by any element
+    */
+  def anyWhile(loopCond: T => Boolean)(matchCond: T => Boolean): Boolean =
+    seq.foldWhile((true, false)) {case (c, r) => c && !r} {
+      (_, e) => (loopCond(e), matchCond(e))
+    }._2
 }
 
 object SeqWrapper {
