@@ -88,6 +88,14 @@ class SeqWrapper[T](seq: Seq[T]) {
     splitMap{(_, c, r) => c +: r}
 
   /**
+    * Create a sequence of sequences starting from the original sequence
+    * where each subsequent sequence has the last element removed.
+    * @return sequence of possible prefixes.
+    */
+  def steppedRight(): Seq[Seq[T]] =
+    splitMap{(_, c, r) => c +: r}
+
+  /**
     * Create a sequence of sequences for each possible
     * unordered subset of the elements in this sequence.
     * Element order is preserved, and elements will not be repeated.
