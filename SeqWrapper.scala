@@ -93,7 +93,7 @@ class SeqWrapper[T](seq: Seq[T]) {
     * @return sequence of possible prefixes.
     */
   def steppedRight(): Seq[Seq[T]] =
-    splitMap{(_, c, r) => c +: r}
+    splitMap{(l, c, _) => l :+ c}
 
   /**
     * Create a sequence of sequences for each possible
