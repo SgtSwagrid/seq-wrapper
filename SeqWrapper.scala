@@ -219,6 +219,16 @@ class SeqWrapper[T](seq: Seq[T]) {
     seq.foldWhile((true, false)) {case (c, r) => c && !r} {
       (_, e) => (loopCond(e), matchCond(e))
     }._2
+
+  /**
+    * Create a sequence of a given size, cyclically
+    * using the elements of this sequence.
+    * @param size elements in new sequence
+    * @return cyclic sequence
+    */
+  def cyclicPad(size: Int): Seq[T] =
+    if(size <= seq.size) seq.take(size)
+    else (seq ++ seq).cyclicPad(size)
 }
 
 object SeqWrapper {
