@@ -238,4 +238,20 @@ object SeqWrapper {
   def repeat[T](base: T)(cond: T => Boolean)(fold: (T => T)): T =
     if(!cond(base)) base
     else repeat(fold(base))(cond)(fold)
+
+  /**
+    * Repeat an action until a condition is met.
+    * No check is made prior to the first iteration.
+    * @param base the starting fold value
+    * @param cond the condition for continuing
+    * @param fold the folding function
+    * @tparam T the value type being folded
+    * @return the resulting value
+    */
+  @tailrec
+  def repeatFirst[T](base: T)(fold: (T => T))(cond: T => Boolean): T = {
+    val folded = fold(base)
+    if (!cond(folded)) base
+    else repeatFirst(folded)(fold)(cond)
+  }
 }
