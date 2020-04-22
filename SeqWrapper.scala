@@ -248,10 +248,7 @@ object SeqWrapper {
     * @tparam T the value type being folded
     * @return the resulting value
     */
-  @tailrec
   def repeatFirst[T](base: T)(fold: (T => T))(cond: T => Boolean): T = {
-    val folded = fold(base)
-    if (!cond(folded)) base
-    else repeatFirst(folded)(fold)(cond)
+    repeat(fold(base))(cond)(fold)
   }
 }
