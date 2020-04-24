@@ -229,6 +229,19 @@ class SeqWrapper[T](seq: Seq[T]) {
   def cyclicPad(size: Int): Seq[T] =
     if(size <= seq.size) seq.take(size)
     else (seq ++ seq).cyclicPad(size)
+
+  /**
+    * Determine how many elements in a row from the start
+    * from both sequences correspond with each other.
+    * @param that list to check correspondence with
+    * @param cond condition for correspondence
+    * @tparam U type of other list
+    * @return the number of prefix elements which correspond
+    */
+  def prefixCorrespondence[U](that: Seq[U])(cond: (T, U) => Boolean): Int =
+    repeat((0, seq, that))
+      {case (_, h1 :: _, h2 :: _) => cond(h1, h2)}
+      {case (i, _ :: t1, _ :: t2) => (i+1, t1, t2)}._1
 }
 
 object SeqWrapper {
