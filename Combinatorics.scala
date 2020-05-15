@@ -26,7 +26,7 @@ object Combinatorics {
       (1L to min(k, n-k)).product
 
   def multichoose(n: Long, k: Long): Long =
-    choose(n-k+1, k)
+    choose(n+k-1, k)
 
   def figurate(n: Long, k: Long): Long =
     choose(n+k-1, n)
